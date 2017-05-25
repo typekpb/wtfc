@@ -9,6 +9,16 @@ services:
     volumes:
       - ./:/tmp/wtfc
 
+  ash: # Almquist Shell https://www.in-ulm.de/~mascheck/various/ash/#busybox
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.alpine
+      args:
+        SHELL_NAME: ash
+        SHELL_PKG: # already installed 
+    volumes:
+      - ./:/tmp/wtfc
+
   bash:
     build:
       context: .

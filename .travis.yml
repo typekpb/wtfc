@@ -7,10 +7,16 @@ env:
     - DOCKER_COMPOSE_VERSION=1.13.0
   matrix:
     - SHELL=busybox
+    - SHELL=ash
     - SHELL=bash
     - SHELL=dash
+    - SHELL=fish
     - SHELL=ksh
     - SHELL=zsh
+
+matrix:
+    allow_failures:
+      - env: SHELL=fish # shproc not supporting fish, see: https://github.com/rylnd/shpec/issues/118
 
 before_install:
   # latest docker 
