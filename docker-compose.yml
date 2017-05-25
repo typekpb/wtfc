@@ -39,7 +39,7 @@ services:
     volumes:
       - ./:/tmp/wtfc
 
-  mksh:
+  ksh:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.alpine
