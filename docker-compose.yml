@@ -1,0 +1,60 @@
+version: "3.0"
+
+services:
+
+  busybox:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.busybox
+    volumes:
+      - ./:/tmp/wtfc
+
+  bash:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.alpine
+      args:
+        SHELL_NAME: bash
+        SHELL_PKG: bash
+    volumes:
+      - ./:/tmp/wtfc
+
+  dash:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.alpine
+      args:
+        SHELL_NAME: dash
+        SHELL_PKG: dash@testing
+    volumes:
+      - ./:/tmp/wtfc
+
+  fish:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.alpine
+      args:
+        SHELL_NAME: fish
+        SHELL_PKG: fish
+    volumes:
+      - ./:/tmp/wtfc
+
+  mksh:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.alpine
+      args:
+        SHELL_NAME: mksh
+        SHELL_PKG: mksh
+    volumes:
+      - ./:/tmp/wtfc
+
+  zsh:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.alpine
+      args:
+        SHELL_NAME: zsh
+        SHELL_PKG: zsh
+    volumes:
+      - ./:/tmp/wtfc

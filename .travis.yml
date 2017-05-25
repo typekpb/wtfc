@@ -1,0 +1,27 @@
+dist: trusty
+sudo: required # due to docker
+language: sh
+
+env:
+  global:
+    - DOCKER_COMPOSE_VERSION=1.13.0
+  matrix:
+    - SHELL=busybox
+    - SHELL=bash
+    - SHELL=dash
+    - SHELL=ksh
+    - SHELL=zsh
+
+before_install:
+  # latest docker 
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
+  - docker --version
+  # docker compose
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+script:
+  - docker-compose run $SHELL
