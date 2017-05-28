@@ -33,7 +33,7 @@ EOF
 `
 
     # print to stderr (for exit status > 0), otherwise to stdout
-    if ([ "$1" -qt 0 ]); then
+    if ([ "$1" -gt 0 ]); then
         echo "${OUTPUT}" >&2
     else
         echo "${OUTPUT}"

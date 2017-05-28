@@ -85,9 +85,13 @@ describe "Unknown argument"
         assert equal "$?" "1"
     end
 
-    it "-Z argument prints 'Unknown argument: -Z'"
+    it "-Z argument prints 'Unknown argument: -Z' to stderr"
         message="$($SHPEC_ROOT/../wtfc.sh -Z 2>&1)"
         assert grep "$message" "Unknown argument: -Z"
     end
     
+    it "-Z argument prints nothing to stdout"
+        message="$($SHPEC_ROOT/../wtfc.sh -Z 2>/dev/null)"
+        assert grep "$message" ""
+    end
 end
