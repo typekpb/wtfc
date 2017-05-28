@@ -29,4 +29,4 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 script:
-  - if [ -z "${SHELL}" ]; then docker-compose run "${SHELL}_${DIST}"; else docker-compose run ${SHELL}; fi
+  - if [ -z "${SHELL}" ]; then docker-compose run "${DIST}"; else docker-compose run "${SHELL}_${DIST}"; fi
