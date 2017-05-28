@@ -29,7 +29,7 @@ USAGE
 }
 
 version() {
-    cat "wtfc (WaiT For the Command) version: ${VERSION}"
+    echo "wtfc (WaiT For the Command) version: ${VERSION}"
     exit 0
 }
 
