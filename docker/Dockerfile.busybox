@@ -11,4 +11,4 @@ WORKDIR "/tmp/wtfc"
 
 # until resolved: https://github.com/rylnd/shpec/pull/117
 # CMD sh -c /shpec
-CMD /tmp/wtfc/inst.sh && sh -c shpec
+CMD /tmp/wtfc/docker/busybox_shpec_inst.sh && sh -c shpec

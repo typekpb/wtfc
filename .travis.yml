@@ -6,17 +6,16 @@ env:
   global:
     - DOCKER_COMPOSE_VERSION=1.13.0
   matrix:
-    - SHELL=busybox
-    - SHELL=ash
-    - SHELL=bash
-    - SHELL=dash
-    - SHELL=fish
-    - SHELL=ksh
-    - SHELL=zsh
-
-matrix:
-    allow_failures:
-      - env: SHELL=fish # shproc not supporting fish, see: https://github.com/rylnd/shpec/issues/118
+    - DIST=busybox
+    - SHELL=ash DIST=alpine
+    - SHELL=bash DIST=alpine
+    - SHELL=bash DIST=debian
+    - SHELL=dash DIST=alpine
+    - SHELL=dash DIST=debian
+    - SHELL=ksh DIST=alpine
+    - SHELL=ksh DIST=debian
+    - SHELL=zsh DIST=alpine
+    - SHELL=zsh DIST=debian
 
 before_install:
   # latest docker 
@@ -30,4 +29,4 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 script:
-  - docker-compose run $SHELL
+  - [ -z "${SHELL}" ] && docker-compose run "${SHELL}_${DIST}"; || docker-compose run ${SHELL}

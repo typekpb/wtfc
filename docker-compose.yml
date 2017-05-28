@@ -9,7 +9,7 @@ services:
     volumes:
       - ./:/tmp/wtfc
 
-  ash: # Almquist Shell https://www.in-ulm.de/~mascheck/various/ash/#busybox
+  ash_alpine: # Almquist Shell https://www.in-ulm.de/~mascheck/various/ash/#busybox
     build:
       context: .
       dockerfile: ./docker/Dockerfile.alpine
@@ -19,7 +19,7 @@ services:
     volumes:
       - ./:/tmp/wtfc
 
-  bash:
+  bash_alpine:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.alpine
@@ -29,7 +29,17 @@ services:
     volumes:
       - ./:/tmp/wtfc
 
-  dash:
+  bash_debian:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.debian
+      args:
+        SHELL_NAME: bash
+        SHELL_PKG: bash
+    volumes:
+      - ./:/tmp/wtfc
+
+  dash_alpine:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.alpine
@@ -39,17 +49,17 @@ services:
     volumes:
       - ./:/tmp/wtfc
 
-  fish:
+  dash_debian:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile.alpine
+      dockerfile: ./docker/Dockerfile.debian
       args:
-        SHELL_NAME: fish
-        SHELL_PKG: fish
+        SHELL_NAME: bash
+        SHELL_PKG: bash
     volumes:
       - ./:/tmp/wtfc
 
-  ksh:
+  ksh_alpine:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.alpine
@@ -59,10 +69,30 @@ services:
     volumes:
       - ./:/tmp/wtfc
 
-  zsh:
+  ksh_debian:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.debian
+      args:
+        SHELL_NAME: ksh
+        SHELL_PKG: ksh
+    volumes:
+      - ./:/tmp/wtfc
+
+  zsh_alpine:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.alpine
+      args:
+        SHELL_NAME: zsh
+        SHELL_PKG: zsh
+    volumes:
+      - ./:/tmp/wtfc
+
+  zsh_debian:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.debian
       args:
         SHELL_NAME: zsh
         SHELL_PKG: zsh
