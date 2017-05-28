@@ -1,3 +1,13 @@
+# timeout error status differs based on distro (busybox/alpine=143, others=124)
+timeout_err_code() {
+    TIMEOUT_FLAG_TEST="$(timeout 1 sleep 0 2>&1)"
+    case "${TIMEOUT_FLAG_TEST}" in
+        timeout:\ can\'t\ execute\ \'1\':*) return 143 ;;
+        *) return 124 ;;
+    esac
+
+}
+
 describe "-V, --version argument"
     it "-V argument exit code is 0"
         $SHPEC_ROOT/../wtfc.sh -V >/dev/null 2>&1 
@@ -46,8 +56,10 @@ describe "COMMAND exit codes"
     end
 
     it "returns 0 if expected as well as actual were non-zero but equal"
+        timeout_err_code
+        expected="$?"
         $SHPEC_ROOT/../wtfc.sh -s 2 ls /nonexistant/dir >/dev/null 2>&1 
-        assert equal "$?" "0"
+        assert equal "$?" "${expected}"
     end
 
 end

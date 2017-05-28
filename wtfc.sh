@@ -48,7 +48,7 @@ wait_for()
 
         if ([ "${result}" -eq "${STATUS}" ]); then
             end_ts=$(date +%s)
-            echoerr "$cmdname: $CMD finished with status $result (expected was $STATUS) after $((end_ts - start_ts)) seconds"
+            echoerr "$cmdname: $CMD finished with expected status $result after $((end_ts - start_ts)) seconds"
             break
         fi
         sleep $INTERVAL
@@ -121,7 +121,6 @@ do
         shift 1
         ;;
         -*)
-        echo "!!!"
         echoerr "Unknown argument: $1"
         usage 1
         ;;
@@ -168,8 +167,7 @@ else
 fi
 
 if [ "${RESULT}" -ne "${STATUS}" ]; then
-    echoerr "$cmdname: timeout occurred after waiting $TIMEOUT seconds for $CMD"
-    exit $RESULT
-else
-    exit 0
+    echoerr "$cmdname: timeout occurred after waiting $TIMEOUT seconds for $CMD to return status: $STATUS (was status: $RESULT)"
 fi
+
+exit $RESULT
