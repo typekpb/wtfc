@@ -1,7 +1,7 @@
 FROM progrium/busybox:latest
 
 RUN \
-    opkg-install curl ca-certificates make
+    opkg-install curl ca-certificates make coreutils-timeout
     #&& \
     # until resolved: https://github.com/rylnd/shpec/pull/117
     # sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
