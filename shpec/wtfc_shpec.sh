@@ -42,6 +42,28 @@ describe "-H, --help argument"
     end
 end
 
+describe "-T, --timeout argument"
+    it "'-T 3' with command taking 2 seconds, exit code is 0"
+        $SHPEC_ROOT/../wtfc.sh -T 3 sleep 2 >/dev/null 2>&1 
+        assert equal "$?" "0"
+    end
+
+    it "'-timeout=3' with command taking 2 seconds, exit code is 0"
+        $SHPEC_ROOT/../wtfc.sh --timeout=3 sleep 2 >/dev/null 2>&1 
+        assert equal "$?" "0"
+    end
+
+    it "'-T 1' with command taking 2 seconds, exit code is not 0"
+        $SHPEC_ROOT/../wtfc.sh -T 1 sleep 2 >/dev/null 2>&1 
+        assert unequal "$?" "0"
+    end
+
+    it "'--timeout=1' with command taking 2 seconds, exit code is not 0"
+        $SHPEC_ROOT/../wtfc.sh --timeout=1 sleep 2 >/dev/null 2>&1 
+        assert unequal "$?" "0"
+    end
+end
+
 describe "COMMAND missing"
     it "exit code is 1"
         $SHPEC_ROOT/../wtfc.sh >/dev/null 2>&1 

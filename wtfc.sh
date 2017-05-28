@@ -29,10 +29,12 @@ Functional arguments:
   
 Logging and info arguments:
   -h, --help               print this help and exit
-  -q, --quiet              be quiet
   -V, --version            display the version of wtfc and exit.
 EOF
 `
+# TODO
+#   -q, --quiet              be quiet
+
 
     # print to stderr (for exit status > 0), otherwise to stdout
     if ([ "$1" -gt 0 ]); then
@@ -122,7 +124,7 @@ do
         TIMEOUT="${1#*=}"
         shift 1
         ;;
-        -t)
+        -T)
         TIMEOUT="$2"
         if [ -z "${TIMEOUT}" ]; then break; fi
         shift 2
