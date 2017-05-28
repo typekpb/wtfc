@@ -86,7 +86,6 @@ describe "Unknown argument"
     end
 
     it "-Z argument prints 'Unknown argument: -Z'"
-        # TODO stdout vs stderr
         message="$($SHPEC_ROOT/../wtfc.sh -Z 2>&1)"
         assert grep "$message" "Unknown argument: -Z"
     end

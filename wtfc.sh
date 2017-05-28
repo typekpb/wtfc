@@ -5,13 +5,19 @@ cmdname="${0##*/}"
 VERSION=0.0.1
 
 echoerr() { 
-    #if [ "${QUIET}" -ne 1 ]; then 
-    echo "$@";
+    # print to stderr or to stdout
+    
+    # if ([ "${QUIET}" -ne 1 ]); then 
+        if ([ "$1" -eq 2 ]); then
+            echo "$@" >&2
+        else
+            echo "$@"
+        fi
     # fi
 }
 
 usage() {
-    cat << USAGE >&2
+    OUTPUT=`cat <<EOF
 Usage: $cmdname [OPTION]... [COMMAND]
 
 Functional arguments:
@@ -22,9 +28,17 @@ Functional arguments:
 Logging and info arguments:
   -h, --help               print this help and exit
   -q, --quiet              be quiet
-  -v, --verbose            be verbose
   -V, --version            display the version of wtfc and exit.
-USAGE
+EOF
+`
+
+    # print to stderr (for exit status > 0), otherwise to stdout
+    if ([ "$1" -qt 0 ]); then
+        echo "${OUTPUT}" >&2
+    else
+        echo "${OUTPUT}"
+    fi
+
     exit $1
 }
 
@@ -36,10 +50,11 @@ version() {
 wait_for()
 {
     if [ "${TIMEOUT}" -gt 0 ]; then
-        echoerr "$cmdname: waiting $TIMEOUT seconds for $CMD"
+        echoerr 1 "$cmdname: waiting $TIMEOUT seconds for $CMD"
     else
-        echoerr "$cmdname: waiting without a timeout for $CMD"
+        echoerr 1 "$cmdname: waiting without a timeout for $CMD"
     fi
+
     start_ts=$(date +%s)
     while :
     do
@@ -48,7 +63,7 @@ wait_for()
 
         if ([ "${result}" -eq "${STATUS}" ]); then
             end_ts=$(date +%s)
-            echoerr "$cmdname: $CMD finished with expected status $result after $((end_ts - start_ts)) seconds"
+            echoerr 1 "$cmdname: $CMD finished with expected status $result after $((end_ts - start_ts)) seconds"
             break
         fi
         sleep $INTERVAL
@@ -59,10 +74,10 @@ wait_for()
 wait_for_wrapper()
 {
     # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
-    if [ "${QUIET}" -eq 1 ]; then
-        timeout $TIMEOUT_FLAG $TIMEOUT $0 --quiet --child --timeout=$TIMEOUT $CMD &
+    if ([ "${QUIET}" -eq 1 ]); then
+        timeout $TIMEOUT_FLAG $TIMEOUT $0 --quiet --child --status=$STATUS --timeout=$TIMEOUT $CMD &
     else
-        timeout $TIMEOUT_FLAG $TIMEOUT $0 --child --timeout=$TIMEOUT $CMD &
+        timeout $TIMEOUT_FLAG $TIMEOUT $0 --child --status=$STATUS --timeout=$TIMEOUT $CMD &
     fi
     PID=$!
     trap "kill -INT -$PID" INT
@@ -83,10 +98,6 @@ do
         usage 0
         ;;
         -q | --quiet)
-        QUIET=1
-        shift 1
-        ;;
-        -v | --verbose)
         QUIET=1
         shift 1
         ;;
@@ -121,7 +132,7 @@ do
         shift 1
         ;;
         -*)
-        echoerr "Unknown argument: $1"
+        echoerr 2 "Unknown argument: $1"
         usage 1
         ;;
         *)
@@ -132,15 +143,12 @@ do
 done
 
 if [ -z "${CMD}" ]; then
-    echoerr "Error: you need to provide a COMMAND to test."
+    echoerr 2 "Error: you need to provide a COMMAND to test."
     usage 1
 fi
 
 CHILD=${CHILD:-0}
-
 QUIET=${QUIET:-0}
-VERBOSE=${VERBOSE:-0}
-
 INTERVAL=${INTERVAL:-1}
 STATUS=${STATUS:-0}
 TIMEOUT=${TIMEOUT:-1}
@@ -167,7 +175,7 @@ else
 fi
 
 if [ "${RESULT}" -ne "${STATUS}" ]; then
-    echoerr "$cmdname: timeout occurred after waiting $TIMEOUT seconds for $CMD to return status: $STATUS (was status: $RESULT)"
+    echoerr 2 "$cmdname: timeout occurred after waiting $TIMEOUT seconds for $CMD to return status: $STATUS (was status: $RESULT)"
 fi
 
 exit $RESULT
