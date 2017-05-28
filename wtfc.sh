@@ -47,8 +47,7 @@ version() {
     exit 0
 }
 
-wait_for()
-{
+wait_for(){
     if [ "${TIMEOUT}" -gt 0 ]; then
         echoto 1 "$cmdname: waiting $TIMEOUT seconds for $CMD"
     else
@@ -71,8 +70,7 @@ wait_for()
     return $result
 }
 
-wait_for_wrapper()
-{
+wait_for_wrapper() {
     # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
     if ([ "${QUIET}" -eq 1 ]); then
         timeout $TIMEOUT_FLAG $TIMEOUT $0 --quiet --child --status=$STATUS --timeout=$TIMEOUT $CMD &
