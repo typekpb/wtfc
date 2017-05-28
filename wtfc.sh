@@ -4,7 +4,7 @@ cmdname="${0##*/}"
 
 VERSION=0.0.1
 
-echoerr() { 
+echoto() { 
     # print to stderr or to stdout
     
     # if ([ "${QUIET}" -ne 1 ]); then 
@@ -50,9 +50,9 @@ version() {
 wait_for()
 {
     if [ "${TIMEOUT}" -gt 0 ]; then
-        echoerr 1 "$cmdname: waiting $TIMEOUT seconds for $CMD"
+        echoto 1 "$cmdname: waiting $TIMEOUT seconds for $CMD"
     else
-        echoerr 1 "$cmdname: waiting without a timeout for $CMD"
+        echoto 1 "$cmdname: waiting without a timeout for $CMD"
     fi
 
     start_ts=$(date +%s)
@@ -63,7 +63,7 @@ wait_for()
 
         if ([ "${result}" -eq "${STATUS}" ]); then
             end_ts=$(date +%s)
-            echoerr 1 "$cmdname: $CMD finished with expected status $result after $((end_ts - start_ts)) seconds"
+            echoto 1 "$cmdname: $CMD finished with expected status $result after $((end_ts - start_ts)) seconds"
             break
         fi
         sleep $INTERVAL
@@ -132,7 +132,7 @@ do
         shift 1
         ;;
         -*)
-        echoerr 2 "Unknown argument: $1"
+        echoto 2 "Unknown argument: $1"
         usage 1
         ;;
         *)
@@ -143,7 +143,7 @@ do
 done
 
 if [ -z "${CMD}" ]; then
-    echoerr 2 "Error: you need to provide a COMMAND to test."
+    echoto 2 "Error: you need to provide a COMMAND to test."
     usage 1
 fi
 
@@ -175,7 +175,7 @@ else
 fi
 
 if [ "${RESULT}" -ne "${STATUS}" ]; then
-    echoerr 2 "$cmdname: timeout occurred after waiting $TIMEOUT seconds for $CMD to return status: $STATUS (was status: $RESULT)"
+    echoto 2 "$cmdname: timeout occurred after waiting $TIMEOUT seconds for $CMD to return status: $STATUS (was status: $RESULT)"
 fi
 
 exit $RESULT
