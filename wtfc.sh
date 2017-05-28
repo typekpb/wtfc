@@ -6,9 +6,11 @@ VERSION=0.0.1
 
 echoto() { 
     # print to stderr or to stdout
-    
+    out=$1
+    shift 1
+
     # if ([ "${QUIET}" -ne 1 ]); then 
-        if ([ "$1" -eq 2 ]); then
+        if ([ "${out}" -eq 2 ]); then
             echo "$@" >&2
         else
             echo "$@"
