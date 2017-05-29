@@ -77,9 +77,9 @@ wait_for(){
 wait_for_wrapper() {
     # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
     if ([ "${QUIET}" -eq 1 ]); then
-        timeout $TIMEOUT_FLAG $TIMEOUT $0 --quiet --child --status=$STATUS --timeout=$TIMEOUT $CMD &
+        $TIMEOUT_CMD $TIMEOUT_FLAG $TIMEOUT $0 --quiet --child --status=$STATUS --timeout=$TIMEOUT $CMD &
     else
-        timeout $TIMEOUT_FLAG $TIMEOUT $0 --child --status=$STATUS --timeout=$TIMEOUT $CMD &
+        $TIMEOUT_CMD $TIMEOUT_FLAG $TIMEOUT $0 --child --status=$STATUS --timeout=$TIMEOUT $CMD &
     fi
     PID=$!
     trap "kill -INT -$PID" INT
@@ -156,8 +156,24 @@ STATUS=${STATUS:-0}
 TIMEOUT=${TIMEOUT:-1}
 
 # check to see if timeout is from busybox/alpine => '-t' switch is required or not
-TIMEOUT_FLAG_TEST="$(timeout 1 sleep 0 2>&1)"
-case "${TIMEOUT_FLAG_TEST}" in
+TIMEOUT_TEST="$(timeout 1 sleep 0 2>&1)"
+TIMEOUT_TEST_STATUS="$?"
+# fallback for osx (uses gtimeout)
+if ([ "${TIMEOUT_TEST_STATUS}" == 127 ]); then
+    TIMEOUT_TEST="$(gtimeout 1 sleep 0 2>&1)"
+    TIMEOUT_TEST_STATUS="$?"
+
+    if ([ "${TIMEOUT_TEST_STATUS}" == 127 ]); then
+        echoto 2 "timeout|gtimeout is required by the script, but not found!"
+        exit 1
+    fi
+
+    TIMEOUT_CMD="gtimeout"
+else 
+    TIMEOUT_CMD="timeout"
+fi
+
+case "${TIMEOUT_TEST}" in
     timeout:\ can\'t\ execute\ \'1\':*) TIMEOUT_FLAG="-t" ;;
     *) TIMEOUT_FLAG="" ;;
 esac

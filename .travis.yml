@@ -41,19 +41,22 @@ matrix:
       env: SH=zsh DIST=debian
     - os: osx
       env: SH=zsh
+  exclude: 
+    # https://github.com/travis-ci/travis-ci/issues/4681
+    - os: linux
+    - os: osx
 
 before_install:
   - |
     if [[ $TRAVIS_OS_NAME == "osx" ]]; then
       brew update
-      brew install ${SH}
+      brew install coreutils ${SH}
       sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
     else
       # latest docker 
-      # sudo apt-get update
-      # sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
+      sudo apt-get update
+      sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
       docker --version
-    
       # docker compose
       sudo rm /usr/local/bin/docker-compose
       curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
