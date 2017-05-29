@@ -9,12 +9,12 @@ timeout_err_code() {
 }
 
 describe "-V, --version argument"
-    it "-V argument exit code is 0"
+    it "-V argument exit status is 0"
         $SHPEC_ROOT/../wtfc.sh -V >/dev/null 2>&1 
         assert equal "$?" "0"
     end
 
-    it "--version argument exit code is 0"
+    it "--version argument exit status is 0"
         $SHPEC_ROOT/../wtfc.sh --version >/dev/null 2>&1 
         assert equal "$?" "0"
     end
@@ -31,47 +31,59 @@ describe "-V, --version argument"
 end
 
 describe "-H, --help argument"
-    it "-H argument exit code is 0"
+    it "-H argument exit status is 0"
         $SHPEC_ROOT/../wtfc.sh -H >/dev/null 2>&1 
         assert equal "$?" "0"
     end
 
-    it "--help argument exit code is 0"
+    it "--help argument exit status is 0"
         $SHPEC_ROOT/../wtfc.sh --help >/dev/null 2>&1 
         assert equal "$?" "0"
     end
 end
 
 describe "-T, --timeout argument"
-    it "'-T 3' with command taking 2 seconds, exit code is 0"
+    it "'-T 3' with command taking 2 seconds, exit status is 0"
         $SHPEC_ROOT/../wtfc.sh -T 3 sleep 2 >/dev/null 2>&1 
         assert equal "$?" "0"
     end
 
-    it "'-timeout=3' with command taking 2 seconds, exit code is 0"
+    it "'-timeout=3' with command taking 2 seconds, exit status is 0"
         $SHPEC_ROOT/../wtfc.sh --timeout=3 sleep 2 >/dev/null 2>&1 
         assert equal "$?" "0"
     end
 
-    it "'-T 1' with command taking 2 seconds, exit code is not 0"
+    it "'-T 1' with command taking 2 seconds, exit status is not 0"
         $SHPEC_ROOT/../wtfc.sh -T 1 sleep 2 >/dev/null 2>&1 
         assert unequal "$?" "0"
     end
 
-    it "'--timeout=1' with command taking 2 seconds, exit code is not 0"
+    it "'--timeout=1' with command taking 2 seconds, exit status is not 0"
         $SHPEC_ROOT/../wtfc.sh --timeout=1 sleep 2 >/dev/null 2>&1 
         assert unequal "$?" "0"
     end
 end
 
 describe "COMMAND missing"
-    it "exit code is 1"
+    it "exit status is 1"
         $SHPEC_ROOT/../wtfc.sh >/dev/null 2>&1 
         assert equal "$?" "1"
     end
 end
 
-describe "COMMAND exit codes"
+describe "COMMAND with pipe"
+    it "exit status 1 is evaluated as not 0"
+        $SHPEC_ROOT/../wtfc.sh 'echo aaa | grep -q zzz' >/dev/null 2>&1 
+        assert unequal "$?" "0"
+    end
+
+    it "exit status 0 is evaluated as 0"
+        $SHPEC_ROOT/../wtfc.sh 'echo aaa | grep -q aaa' >/dev/null 2>&1 
+        assert equal "$?" "0"
+    end
+end
+
+describe "COMMAND exit status"
     it "returns 0 if expected as well as actual were 0"
         $SHPEC_ROOT/../wtfc.sh -s 0 ls >/dev/null 2>&1 
         assert equal "$?" "0"
@@ -97,12 +109,12 @@ describe "COMMAND exit codes"
 end
 
 describe "Unknown argument"
-    it "-Z argument exit code is 1"
+    it "-Z argument exit status is 1"
         $SHPEC_ROOT/../wtfc.sh -Z >/dev/null 2>&1 
         assert equal "$?" "1"
     end
 
-    it "--zzz argument exit code is 1"
+    it "--zzz argument exit status is 1"
         $SHPEC_ROOT/../wtfc.sh --zzz >/dev/null 2>&1 
         assert equal "$?" "1"
     end

@@ -61,7 +61,7 @@ wait_for(){
     start_ts=$(date +%s)
     while :
     do
-        ($CMD) >/dev/null 2>&1
+        eval $CMD >/dev/null 2>&1
         result=$?
 
         if ([ "${result}" -eq "${STATUS}" ]); then
