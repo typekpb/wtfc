@@ -4,6 +4,10 @@ WaiT For the Command (wtfc)
 
 Sh script capable of waiting for command execution exit status for specified timeout.
 
+Works well with:
+* various OSes: Busybox, Alpine Linux, Debian Linux and OSX
+* as well as various shells: ash, bash, dash, ksh and zsh
+
 Usage
 ===
 
