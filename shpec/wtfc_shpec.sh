@@ -1,5 +1,5 @@
 # timeout error status differs based on distro (busybox/alpine=143, others=124)
-timeout_err_code() {
+timeout_err_status() {
     TIMEOUT_FLAG_TEST="$(timeout 1 sleep 0 2>&1)"
     case "${TIMEOUT_FLAG_TEST}" in
         timeout:\ can\'t\ execute\ \'1\':*) return 143 ;;
@@ -95,14 +95,14 @@ describe "COMMAND exit status"
     end
 
     it "returns 123/143 if expected is 0, but actual was not 0"
-        timeout_err_code
+        timeout_err_status
         timeout_status="$?"
         $SHPEC_ROOT/../wtfc.sh -s 0 ls /nonexistant/dir >/dev/null 2>&1 
         assert equal "$?" "${timeout_status}"
     end
 
     it "returns 0 if expected as well as actual were non-zero but equal"
-        timeout_err_code
+        timeout_err_status
         timeout_status="$?"
         $SHPEC_ROOT/../wtfc.sh -s ${timeout_status} ls /nonexistant/dir >/dev/null 2>&1 
         assert equal "$?" "0"
