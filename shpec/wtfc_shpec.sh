@@ -72,9 +72,9 @@ describe "COMMAND missing"
 end
 
 describe "COMMAND with pipe"
-    it "exit status 1 is evaluated as not 0"
+    it "exit status 1 is evaluated as 1"
         $SHPEC_ROOT/../wtfc.sh 'echo aaa | grep -q zzz' >/dev/null 2>&1 
-        assert unequal "$?" "0"
+        assert equal "$?" "1"
     end
 
     it "exit status 0 is evaluated as 0"
@@ -94,16 +94,18 @@ describe "COMMAND exit status"
         assert equal "$?" "0"
     end
 
-    it "returns 1 if expected is 0, but actual was not 0"
+    it "returns 123/143 if expected is 0, but actual was not 0"
+        timeout_err_code
+        timeout_status="$?"
         $SHPEC_ROOT/../wtfc.sh -s 0 ls /nonexistant/dir >/dev/null 2>&1 
-        assert unequal "$?" "0"
+        assert equal "$?" "${timeout_status}"
     end
 
     it "returns 0 if expected as well as actual were non-zero but equal"
         timeout_err_code
-        expected="$?"
-        $SHPEC_ROOT/../wtfc.sh -s 2 ls /nonexistant/dir >/dev/null 2>&1 
-        assert equal "$?" "${expected}"
+        timeout_status="$?"
+        $SHPEC_ROOT/../wtfc.sh -s ${timeout_status} ls /nonexistant/dir >/dev/null 2>&1 
+        assert equal "$?" "0"
     end
 
 end

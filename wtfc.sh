@@ -77,9 +77,9 @@ wait_for(){
 wait_for_wrapper() {
     # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
     if ([ "${QUIET}" -eq 1 ]); then
-        $TIMEOUT_CMD $TIMEOUT_FLAG $TIMEOUT $0 --quiet --child --status=$STATUS --timeout=$TIMEOUT $CMD &
+        eval $TIMEOUT_CMD $TIMEOUT_FLAG $TIMEOUT $0 --quiet --child --status=$STATUS --timeout=$TIMEOUT $CMD &
     else
-        $TIMEOUT_CMD $TIMEOUT_FLAG $TIMEOUT $0 --child --status=$STATUS --timeout=$TIMEOUT $CMD &
+        eval $TIMEOUT_CMD $TIMEOUT_FLAG $TIMEOUT $0 --child --status=$STATUS --timeout=$TIMEOUT $CMD &
     fi
     PID=$!
     trap "kill -INT -$PID" INT
@@ -194,6 +194,7 @@ fi
 
 if [ "${RESULT}" -ne "${STATUS}" ]; then
     echoto 2 "$cmdname: timeout occurred after waiting $TIMEOUT seconds for $CMD to return status: $STATUS (was status: $RESULT)"
+    exit $RESULT
+else
+    exit 0
 fi
-
-exit $RESULT
