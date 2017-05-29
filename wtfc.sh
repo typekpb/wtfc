@@ -157,12 +157,19 @@ TIMEOUT=${TIMEOUT:-1}
 
 # check to see if timeout is from busybox/alpine => '-t' switch is required or not
 TIMEOUT_TEST="$(timeout 1 sleep 0 2>&1)"
+case "${TIMEOUT_TEST}" in
+    timeout:\ can\'t\ execute\ \'1\':*) TIMEOUT_FLAG="-t" ;;
+    *) TIMEOUT_FLAG="" ;;
+esac
+
+TIMEOUT_TEST="$(timeout ${TIMEOUT_FLAG} 1 sleep 0 2>&1)"
 TIMEOUT_TEST_STATUS="$?"
+
 # fallback for osx (uses gtimeout)
 if ([ "${TIMEOUT_TEST_STATUS}" == 127 ]); then
-    TIMEOUT_TEST="$(gtimeout 1 sleep 0 2>&1)"
+    TIMEOUT_TEST="$(gtimeout ${TIMEOUT_FLAG} 1 sleep 0 2>&1)"
     TIMEOUT_TEST_STATUS="$?"
-
+    
     if ([ "${TIMEOUT_TEST_STATUS}" == 127 ]); then
         echoto 2 "timeout|gtimeout is required by the script, but not found!"
         exit 1
@@ -172,11 +179,6 @@ if ([ "${TIMEOUT_TEST_STATUS}" == 127 ]); then
 else 
     TIMEOUT_CMD="timeout"
 fi
-
-case "${TIMEOUT_TEST}" in
-    timeout:\ can\'t\ execute\ \'1\':*) TIMEOUT_FLAG="-t" ;;
-    *) TIMEOUT_FLAG="" ;;
-esac
 
 if [ "${CHILD}" -eq 1 ]; then
     wait_for
