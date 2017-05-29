@@ -24,7 +24,7 @@ Usage: $cmdname [OPTION]... [COMMAND]
 
 Functional arguments:
   -i, --interval=SECONDS   set the check interval to SECONDS (default is 1)
-  -s, --status=NUMBER      set the expected COMMAND exit status to NUMBER (defualt is 0)
+  -s, --status=NUMBER      set the expected COMMAND exit status to NUMBER (default is 0)
   -t, --timeout=SECONDS    set the timeout to SECONDS (zero for no timeout)
   
 Logging and info arguments:

@@ -2,7 +2,7 @@ WaiT For the Command (wtfc)
 ===
 [![Build Status](https://secure.travis-ci.org/typekpb/wtfc.png?branch=master)](http://travis-ci.org/typekpb/wtfc)
 
-Sh script capable of waiting for command execution exit status for specified timeout.
+Shell script capable of waiting for command execution exit status for specified timeout.
 
 Works well with:
 * various OSes: Busybox, Alpine Linux, Debian Linux and OSX
@@ -15,7 +15,7 @@ Usage
 
     Functional arguments:
     -i, --interval=SECONDS   set the check interval to SECONDS (default is 1)
-    -s, --status=NUMBER      set the expected COMMAND exit status to NUMBER (defualt is 0)
+    -s, --status=NUMBER      set the expected COMMAND exit status to NUMBER (default is 0)
     -t, --timeout=SECONDS    set the timeout to SECONDS (zero for no timeout)
     
     Logging and info arguments:
