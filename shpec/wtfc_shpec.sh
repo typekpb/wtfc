@@ -71,6 +71,17 @@ describe "COMMAND missing"
     end
 end
 
+describe "-- argument (COMMAND via stdin)"
+    it "exit status 1 is evaluated as 1"
+        echo 'echo aaa | grep -q zzz' | $SHPEC_ROOT/../wtfc.sh -- >/dev/null 2>&1 
+        assert equal "$?" "1"
+    end
+    it "exit status 0 is evaluated as 0"
+        echo "echo aaa | grep -q aaa" | $SHPEC_ROOT/../wtfc.sh -- >/dev/null 2>&1 
+        assert equal "$?" "0"
+    end
+end
+
 describe "COMMAND with pipe"
     it "exit status 1 is evaluated as 1"
         $SHPEC_ROOT/../wtfc.sh 'echo aaa | grep -q zzz' >/dev/null 2>&1 

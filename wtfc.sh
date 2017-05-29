@@ -25,10 +25,11 @@ Usage: $cmdname [OPTION]... [COMMAND]
 Functional arguments:
   -i, --interval=SECONDS   set the check interval to SECONDS (default is 1)
   -s, --status=NUMBER      set the expected COMMAND exit status to NUMBER (default is 0)
-  -t, --timeout=SECONDS    set the timeout to SECONDS (zero for no timeout)
-  
+  -t, --timeout=SECONDS    set the timeout to SECONDS (0 for no timeout, default is 1)
+  --                       read the COMMAND from stdin
+
 Logging and info arguments:
-  -h, --help               print this help and exit
+  -H, --help               print this help and exit
   -V, --version            display the version of wtfc and exit.
 EOF
 `
@@ -133,6 +134,10 @@ do
         TIMEOUT="${1#*=}"
         shift 1
         ;;
+        --)
+        STDIN=1
+        shift 1
+        ;;
         -*)
         echoto 2 "Unknown argument: $1"
         usage 1
@@ -143,6 +148,11 @@ do
         ;;
     esac
 done
+
+STDIN=${STDIN:-0}
+if ([ "${STDIN}" == 1 ]); then
+    read CMD
+fi
 
 if [ -z "${CMD}" ]; then
     echoto 2 "Error: you need to provide a COMMAND to test."
