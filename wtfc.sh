@@ -8,14 +8,15 @@ echoto() {
     # print to stderr or to stdout
     out=$1
     shift 1
-
-    # if [ "${QUIET}" -ne 1 ]; then 
-        if ([ "${out}" -eq 2 ]); then
-            echo "$@" >&2
-        else
+    
+    if ([ "${out}" -eq 2 ]); then
+        echo "$@" >&2
+    else
+        # stdout can be silenced only
+        if [ "${QUIET}" -eq 0 ]; then 
             echo "$@"
         fi
-    # fi
+    fi
 }
 
 usage() {
@@ -29,13 +30,11 @@ Functional arguments:
   --                       read the COMMAND from stdin
 
 Logging and info arguments:
+  -Q, --quiet              be quiet
   -H, --help               print this help and exit
   -V, --version            display the version of wtfc and exit.
 EOF
 `
-# TODO
-#   -q, --quiet              be quiet
-
 
     # print to stderr (for exit status > 0), otherwise to stdout
     if ([ "$1" -gt 0 ]); then
@@ -100,7 +99,7 @@ do
         -H | --help)
         usage 0
         ;;
-        -q | --quiet)
+        -Q | --quiet)
         QUIET=1
         shift 1
         ;;

@@ -8,6 +8,28 @@ timeout_err_status() {
 
 }
 
+describe "-Q, --quiet argument"
+    it "-Q argument prevents printing to stdout"
+        message="$($SHPEC_ROOT/../wtfc.sh -Q ls)"
+        assert grep "$message" ""
+    end
+
+    it "--quiet argument prevents printing to stdout"
+        message="$($SHPEC_ROOT/../wtfc.sh --quiet ls)"
+        assert grep "$message" ""
+    end
+
+    it "-Q argument doesn't prevent printing to stderr"
+        message="$($SHPEC_ROOT/../wtfc.sh -Q 2>&1 > /dev/null)"
+        assert grep "$message" "Error: you need to provide a COMMAND to test."
+    end
+
+    it "--quiet argument doesn't prevent printing to stderr"
+        message="$($SHPEC_ROOT/../wtfc.sh --quiet 2>&1 > /dev/null)"
+        assert grep "$message" "Error: you need to provide a COMMAND to test."
+    end
+end
+
 describe "-V, --version argument"
     it "-V argument exit status is 0"
         $SHPEC_ROOT/../wtfc.sh -V >/dev/null 2>&1 
@@ -133,7 +155,7 @@ describe "Unknown argument"
     end
 
     it "-Z argument prints 'Unknown argument: -Z' to stderr"
-        message="$($SHPEC_ROOT/../wtfc.sh -Z 2>&1)"
+        message="$($SHPEC_ROOT/../wtfc.sh -Z 2>&1 > /dev/null)"
         assert grep "$message" "Unknown argument: -Z"
     end
     
