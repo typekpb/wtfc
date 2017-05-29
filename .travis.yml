@@ -1,32 +1,74 @@
-dist: trusty
-sudo: required # due to docker
 language: sh
+
+os:
+  - linux
+  - osx
+
+dist: trusty
+services: docker
 
 env:
   global:
     - DOCKER_COMPOSE_VERSION=1.13.0
-  matrix:
-    - DIST=busybox
-    - SH=ash DIST=alpine
-    - SH=bash DIST=alpine
-    - SH=bash DIST=debian
-    - SH=dash DIST=alpine
-    - SH=dash DIST=debian
-    - SH=ksh DIST=alpine
-    - SH=ksh DIST=debian
-    - SH=zsh DIST=alpine
-    - SH=zsh DIST=debian
+
+matrix:
+  include:
+    - os: linux
+      env: DIST=busybox
+    - os: linux
+      env: SH=ash DIST=alpine
+    - os: linux
+      env: SH=bash DIST=alpine
+    - os: linux
+      env: SH=bash DIST=debian
+    - os: osx
+      env: SH=bash
+    - os: linux
+      env: SH=dash DIST=alpine
+    - os: linux
+      env: SH=dash DIST=debian
+    - os: osx
+      env: SH=dash
+    - os: linux
+      env: SH=ksh DIST=alpine
+    - os: linux
+      env: SH=ksh DIST=debian
+    - os: osx
+      env: SH=ksh
+    - os: linux
+      env: SH=zsh DIST=alpine
+    - os: linux
+      env: SH=zsh DIST=debian
+    - os: osx
+      env: SH=zsh
 
 before_install:
-  # latest docker 
-  - sudo apt-get update
-  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
-  - docker --version
-  # docker compose
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
+  - |
+    if [[ $TRAVIS_OS_NAME == "osx" ]]; then
+      brew update
+      brew install ${SH}
+      sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
+    else
+      # latest docker 
+      # sudo apt-get update
+      # sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
+      docker --version
+    
+      # docker compose
+      sudo rm /usr/local/bin/docker-compose
+      curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+      chmod +x docker-compose
+      sudo mv docker-compose /usr/local/bin
+    fi
 
 script:
-  - if [ -z "${SH}" ]; then docker-compose run "${DIST}"; else docker-compose run "${SH}_${DIST}"; fi
+  - |
+    if [[ $TRAVIS_OS_NAME == "osx" ]]; then
+      ${SH} -c shpec
+    else
+      if [ -z "${SH}" ]; then
+        docker-compose run "${DIST}"; 
+      else 
+        docker-compose run "${SH}_${DIST}"; 
+      fi
+    fi
