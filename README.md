@@ -20,6 +20,7 @@ Usage
     --                       read the COMMAND from stdin
     
     Logging and info arguments:
+    -Q, --quiet              be quiet
     -H, --help               print this help and exit
     -V, --version            display the version of wtfc and exit.
 
