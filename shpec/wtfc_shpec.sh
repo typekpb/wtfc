@@ -77,7 +77,7 @@ describe "-- argument (COMMAND via stdin)"
         assert equal "$?" "1"
     end
     it "exit status 0 is evaluated as 0"
-        echo "echo aaa | grep -q aaa" | $SHPEC_ROOT/../wtfc.sh -- >/dev/null 2>&1 
+        echo 'echo aaa | grep -q aaa' | $SHPEC_ROOT/../wtfc.sh -- >/dev/null 2>&1 
         assert equal "$?" "0"
     end
 end

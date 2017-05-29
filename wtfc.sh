@@ -9,7 +9,7 @@ echoto() {
     out=$1
     shift 1
 
-    # if ([ "${QUIET}" -ne 1 ]); then 
+    # if [ "${QUIET}" -ne 1 ]; then 
         if ([ "${out}" -eq 2 ]); then
             echo "$@" >&2
         else
@@ -150,7 +150,7 @@ do
 done
 
 STDIN=${STDIN:-0}
-if ([ "${STDIN}" == 1 ]); then
+if [ "${STDIN}" -eq 1 ]; then
     read CMD
 fi
 
@@ -176,11 +176,11 @@ TIMEOUT_TEST="$(timeout ${TIMEOUT_FLAG} 1 sleep 0 2>&1)"
 TIMEOUT_TEST_STATUS="$?"
 
 # fallback for osx (uses gtimeout)
-if ([ "${TIMEOUT_TEST_STATUS}" == 127 ]); then
+if [ "${TIMEOUT_TEST_STATUS}" -eq 127 ]; then
     TIMEOUT_TEST="$(gtimeout ${TIMEOUT_FLAG} 1 sleep 0 2>&1)"
     TIMEOUT_TEST_STATUS="$?"
     
-    if ([ "${TIMEOUT_TEST_STATUS}" == 127 ]); then
+    if [ "${TIMEOUT_TEST_STATUS}" -eq 127 ]; then
         echoto 2 "timeout|gtimeout is required by the script, but not found!"
         exit 1
     fi
