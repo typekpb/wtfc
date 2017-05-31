@@ -28,17 +28,6 @@ Usage
       ./wtfc.sh -T 1 -S 0 ls /tmp                   Waits for 1 second for 'ls /tmp' to execute with exit status 0
       echo "ls /foo/bar" | ./wtfc.sh -T 2 -S 2      Waits for 2 seconds for 'ls /foo/bar' to execute with exit status 2
 
-Sample
-===
-
-    ./wtfc.sh --timeout=1 --status=0 ls
-    wtfc.sh: waiting 2 seconds for ls
-    wtfc.sh: ls finished with expected status 0 after 0 seconds
-
-    echo "ls /nonexistent" | ./wtfc.sh --timeout=1 --status=2
-    wtfc.sh: waiting 2 seconds for ls /nonexistent
-    wtfc.sh: timeout occurred after waiting 2 seconds for ls /nonexistent to return status: 0 (was status: 124)
-
 Inspiration
 ===
 
