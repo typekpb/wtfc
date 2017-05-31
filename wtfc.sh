@@ -22,12 +22,12 @@ echoto() {
 usage() {
     OUTPUT=`cat <<EOF
 Usage: $cmdname [OPTION]... [COMMAND]
+WaiT For The Command (wtfc) waits for the COMMAND provided as the last argument or via standard input to return within timeout with expected exit status.
 
 Functional arguments:
   -i, --interval=SECONDS   set the check interval to SECONDS (default is 1)
   -s, --status=NUMBER      set the expected COMMAND exit status to NUMBER (default is 0)
   -t, --timeout=SECONDS    set the timeout to SECONDS (0 for no timeout, default is 1)
-  --                       read the COMMAND from stdin
 
 Logging and info arguments:
   -Q, --quiet              be quiet
@@ -133,10 +133,6 @@ do
         TIMEOUT="${1#*=}"
         shift 1
         ;;
-        --)
-        STDIN=1
-        shift 1
-        ;;
         -*)
         echoto 2 "Unknown argument: $1"
         usage 1
@@ -148,13 +144,13 @@ do
     esac
 done
 
-STDIN=${STDIN:-0}
-if [ "${STDIN}" -eq 1 ]; then
+# read from stdin, if no cmd provided
+if [ -z "${CMD}" ]; then
     read CMD
 fi
 
 if [ -z "${CMD}" ]; then
-    echoto 2 "Error: you need to provide a COMMAND to test."
+    echoto 2 "Error: you need to provide a COMMAND to test as the last argument or via standard input."
     usage 1
 fi
 

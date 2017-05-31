@@ -20,13 +20,13 @@ describe "-Q, --quiet argument"
     end
 
     it "-Q argument doesn't prevent printing to stderr"
-        message="$($SHPEC_ROOT/../wtfc.sh -Q 2>&1 > /dev/null)"
-        assert grep "$message" "Error: you need to provide a COMMAND to test."
+        message="$($SHPEC_ROOT/../wtfc.sh -Q -zzz "" 2>&1 > /dev/null)"
+        assert grep "$message" "Unknown argument: -zzz"
     end
 
     it "--quiet argument doesn't prevent printing to stderr"
-        message="$($SHPEC_ROOT/../wtfc.sh --quiet 2>&1 > /dev/null)"
-        assert grep "$message" "Error: you need to provide a COMMAND to test."
+        message="$($SHPEC_ROOT/../wtfc.sh --quiet -zzz 2>&1 > /dev/null)"
+        assert grep "$message" "Unknown argument: -zzz"
     end
 end
 
@@ -86,20 +86,13 @@ describe "-T, --timeout argument"
     end
 end
 
-describe "COMMAND missing"
-    it "exit status is 1"
-        $SHPEC_ROOT/../wtfc.sh >/dev/null 2>&1 
-        assert equal "$?" "1"
-    end
-end
-
-describe "-- argument (COMMAND via stdin)"
+describe "COMMAND read from stdin"
     it "exit status 1 is evaluated as 1"
-        echo 'echo aaa | grep -q zzz' | $SHPEC_ROOT/../wtfc.sh -- >/dev/null 2>&1 
+        echo 'echo aaa | grep -q zzz' | $SHPEC_ROOT/../wtfc.sh >/dev/null 2>&1 
         assert equal "$?" "1"
     end
     it "exit status 0 is evaluated as 0"
-        echo 'echo aaa | grep -q aaa' | $SHPEC_ROOT/../wtfc.sh -- >/dev/null 2>&1 
+        echo 'echo aaa | grep -q aaa' | $SHPEC_ROOT/../wtfc.sh >/dev/null 2>&1 
         assert equal "$?" "0"
     end
 end

@@ -12,12 +12,12 @@ Usage
 ===
 
     Usage: wtfc.sh [OPTION]... [COMMAND]
-
+    WaiT For The Command (wtfc) waits for the COMMAND provided as the last argument or via standard input to return within timeout with expected exit status.
+    
     Functional arguments:
     -i, --interval=SECONDS   set the check interval to SECONDS (default is 1)
     -s, --status=NUMBER      set the expected COMMAND exit status to NUMBER (default is 0)
     -t, --timeout=SECONDS    set the timeout to SECONDS (0 for no timeout, default is 1)
-    --                       read the COMMAND from stdin
     
     Logging and info arguments:
     -Q, --quiet              be quiet
