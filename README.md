@@ -5,7 +5,7 @@ WaiT For the Command (wtfc)
 Shell script capable of waiting for command execution exit status for specified timeout.
 
 Works well with POSIX shells:
-* ash, bash, dash, ksh and zsh on Linux, OSX, Busybox (see our [CI env]((http://travis-ci.org/typekpb/wtfc))).
+* ash, bash, dash, ksh and zsh on Linux, OSX, Busybox (see our [CI env](http://travis-ci.org/typekpb/wtfc)).
 
 Shells we don't support include:
 * tcsh|csh (due to missing function definition support) and fish.
