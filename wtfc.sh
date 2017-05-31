@@ -25,14 +25,18 @@ Usage: $cmdname [OPTION]... [COMMAND]
 WaiT For The Command (wtfc) waits for the COMMAND provided as the last argument or via standard input to return within timeout with expected exit status.
 
 Functional arguments:
-  -i, --interval=SECONDS   set the check interval to SECONDS (default is 1)
-  -s, --status=NUMBER      set the expected COMMAND exit status to NUMBER (default is 0)
-  -t, --timeout=SECONDS    set the timeout to SECONDS (0 for no timeout, default is 1)
+  -I, --interval=SECONDS   set the check interval to SECONDS (default is 1)
+  -S, --status=NUMBER      set the expected COMMAND exit status to NUMBER (default is 0)
+  -T, --timeout=SECONDS    set the timeout to SECONDS (0 for no timeout, default is 1)
 
 Logging and info arguments:
   -Q, --quiet              be quiet
   -H, --help               print this help and exit
   -V, --version            display the version of wtfc and exit.
+
+Examples:
+  ./wtfc.sh -T 1 -S 0 ls /tmp                   Waits for 1 second for 'ls /tmp' to execute with exit status 0
+  echo "ls /foo/bar" | ./wtfc.sh -T 2 -S 2      Waits for 2 seconds for 'ls /foo/bar' to execute with exit status 2
 EOF
 `
 
@@ -57,16 +61,13 @@ wait_for(){
     else
         echoto 1 "$cmdname: waiting without a timeout for $CMD"
     fi
-
-    start_ts=$(date +%s)
+    
     while :
     do
         eval $CMD >/dev/null 2>&1
         result=$?
 
         if ([ "${result}" -eq "${STATUS}" ]); then
-            end_ts=$(date +%s)
-            echoto 1 "$cmdname: $CMD finished with expected status $result after $((end_ts - start_ts)) seconds"
             break
         fi
         sleep $INTERVAL
@@ -106,7 +107,7 @@ do
         -V | --version)
         version
         ;;
-        -i)
+        -I)
         INTERVAL="$2"
         if [ -z "${INTERVAL}" ]; then break; fi
         shift 2
@@ -115,7 +116,7 @@ do
         INTERVAL="${1#*=}"
         shift 1
         ;;
-        -s)
+        -S)
         STATUS="$2"
         if [ -z "${STATUS}" ]; then break; fi
         shift 2
@@ -185,6 +186,8 @@ else
     TIMEOUT_CMD="timeout"
 fi
 
+start_ts=$(date +%s)
+
 if [ "${CHILD}" -eq 1 ]; then
     wait_for
     RESULT=$?
@@ -203,5 +206,7 @@ if [ "${RESULT}" -ne "${STATUS}" ]; then
     echoto 2 "$cmdname: timeout occurred after waiting $TIMEOUT seconds for $CMD to return status: $STATUS (was status: $RESULT)"
     exit $RESULT
 else
+    end_ts=$(date +%s)
+    echoto 1 "$cmdname: $CMD finished with expected status $RESULT after $((end_ts - start_ts)) seconds"
     exit 0
 fi
