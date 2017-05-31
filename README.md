@@ -31,7 +31,7 @@ Sample
     wtfc.sh: waiting 2 seconds for ls
     wtfc.sh: ls finished with expected status 0 after 0 seconds
 
-    echo "ls /nonexistent" | ./wtfc.sh --timeout=1 --status=2 --
+    echo "ls /nonexistent" | ./wtfc.sh --timeout=1 --status=2
     wtfc.sh: waiting 2 seconds for ls /nonexistent
     wtfc.sh: timeout occurred after waiting 2 seconds for ls /nonexistent to return status: 0 (was status: 124)
 
