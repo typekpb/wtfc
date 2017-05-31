@@ -22,7 +22,7 @@ echoto() {
 usage() {
     OUTPUT=`cat <<EOF
 Usage: $cmdname [OPTION]... [COMMAND]
-WaiT For The Command (wtfc) waits for the COMMAND provided as the last argument or via standard input to return within timeout with expected exit status.
+wtfc (WaiT For The Command) waits for the COMMAND provided as the last argument or via standard input to return within timeout with expected exit status.
 
 Functional arguments:
   -I, --interval=SECONDS   set the check interval to SECONDS (default is 1)
