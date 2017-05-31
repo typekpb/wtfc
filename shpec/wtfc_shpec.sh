@@ -111,7 +111,7 @@ end
 
 describe "COMMAND exit status"
     it "returns 0 if expected as well as actual were 0"
-        $SHPEC_ROOT/../wtfc.sh -s 0 ls >/dev/null 2>&1 
+        $SHPEC_ROOT/../wtfc.sh -S 0 ls >/dev/null 2>&1 
         assert equal "$?" "0"
     end
 
@@ -123,14 +123,14 @@ describe "COMMAND exit status"
     it "returns 123/143 if expected is 0, but actual was not 0"
         timeout_err_status
         timeout_status="$?"
-        $SHPEC_ROOT/../wtfc.sh -s 0 ls /nonexistant/dir >/dev/null 2>&1 
+        $SHPEC_ROOT/../wtfc.sh -S 0 ls /nonexistant/dir >/dev/null 2>&1 
         assert equal "$?" "${timeout_status}"
     end
 
     it "returns 0 if expected as well as actual were non-zero but equal"
         timeout_err_status
         timeout_status="$?"
-        $SHPEC_ROOT/../wtfc.sh -s ${timeout_status} ls /nonexistant/dir >/dev/null 2>&1 
+        $SHPEC_ROOT/../wtfc.sh -S ${timeout_status} ls /nonexistant/dir >/dev/null 2>&1 
         assert equal "$?" "0"
     end
 
