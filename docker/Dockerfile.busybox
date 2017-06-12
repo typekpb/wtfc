@@ -1,14 +1,10 @@
 FROM progrium/busybox:latest
 
 RUN \
-    opkg-install curl ca-certificates make coreutils-timeout
-    #&& \
-    # until resolved: https://github.com/rylnd/shpec/pull/117
-    # sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
+    opkg-install curl ca-certificates make coreutils-timeout && \
+    sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
 
 VOLUME "/tmp/wtfc"
 WORKDIR "/tmp/wtfc"
 
-# until resolved: https://github.com/rylnd/shpec/pull/117
-# CMD sh -c /shpec
-CMD /tmp/wtfc/docker/busybox_shpec_inst.sh && sh -c shpec
+CMD sh -c shpec
