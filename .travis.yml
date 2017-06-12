@@ -30,6 +30,12 @@ matrix:
     - os: osx
       env: SH=dash
     - os: linux
+      env: SH=fish DIST=alpine
+    - os: linux
+      env: SH=fish DIST=debian
+    - os: osx
+      env: SH=fish
+    - os: linux
       env: SH=ksh DIST=alpine
     - os: linux
       env: SH=ksh DIST=debian

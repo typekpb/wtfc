@@ -4,6 +4,8 @@ ARG SHELL_NAME
 ARG SHELL_PKG
 
 RUN \
+    # required for fish
+    echo "deb http://ftp.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list && \
     apt-get update && \
     apt-get install -yy -q ${SHELL_PKG} curl make && \
     sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"

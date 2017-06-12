@@ -59,6 +59,26 @@ services:
     volumes:
       - ./:/tmp/wtfc
 
+  fish_alpine:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.alpine
+      args:
+        SHELL_NAME: fish
+        SHELL_PKG: fish
+    volumes:
+      - ./:/tmp/wtfc
+
+  fish_debian:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.debian
+      args:
+        SHELL_NAME: fish
+        SHELL_PKG: fish
+    volumes:
+      - ./:/tmp/wtfc
+
   ksh_alpine:
     build:
       context: .
