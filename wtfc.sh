@@ -2,7 +2,7 @@
 
 cmdname="${0##*/}"
 
-VERSION=0.0.1
+VERSION=0.0.2
 
 echoto() { 
     # print to stderr or to stdout
@@ -10,29 +10,37 @@ echoto() {
     shift 1
     
     if ([ "${out}" -eq 2 ]); then
-        echo "$@" >&2
+        printf "$@" >&2
     else
         # stdout can be silenced only
         if [ "${QUIET}" -eq 0 ]; then 
-            echo "$@"
+            printf "$@"
         fi
     fi
 }
 
+progress() {
+    if ([ "${PROGRESS}" -eq 1 ]); then
+        echoto 1 "."
+    fi
+}
+
 usage() {
+    #  (TODO) -F, --format-progress=FORMAT  set FORMAT for progress, available: DOTS, PROGRESSBAR (default is DOTS)
     OUTPUT=`cat <<EOF
 Usage: $cmdname [OPTION]... [COMMAND]
 wtfc (WaiT For The Command) waits for the COMMAND provided as the last argument or via standard input to return within timeout with expected exit status.
 
 Functional arguments:
-  -I, --interval=SECONDS   set the check interval to SECONDS (default is 1)
-  -S, --status=NUMBER      set the expected COMMAND exit status to NUMBER (default is 0)
-  -T, --timeout=SECONDS    set the timeout to SECONDS (0 for no timeout, default is 1)
+  -I, --interval=SECONDS       set the check interval to SECONDS (default is 1)
+  -S, --status=NUMBER          set the expected COMMAND exit status to NUMBER (default is 0)
+  -T, --timeout=SECONDS        set the timeout to SECONDS (0 for no timeout, default is 1)
 
 Logging and info arguments:
-  -Q, --quiet              be quiet
-  -H, --help               print this help and exit
-  -V, --version            display the version of wtfc and exit.
+  -P, --progress               show progress (default is 0)
+  -H, --help                   print this help and exit
+  -Q, --quiet                  be quiet
+  -V, --version                display the version of wtfc and exit.
 
 Examples:
   ./wtfc.sh -T 1 -S 0 ls /tmp                   Waits for 1 second for 'ls /tmp' to execute with exit status 0
@@ -57,9 +65,9 @@ version() {
 
 wait_for(){
     if [ "${TIMEOUT}" -gt 0 ]; then
-        echoto 1 "$cmdname: waiting $TIMEOUT seconds for $CMD"
+        echoto 1 "$cmdname: waiting $TIMEOUT seconds for $CMD\n"
     else
-        echoto 1 "$cmdname: waiting without a timeout for $CMD"
+        echoto 1 "$cmdname: waiting without a timeout for $CMD\n"
     fi
     
     while :
@@ -71,11 +79,15 @@ wait_for(){
             break
         fi
         sleep $INTERVAL
+        
+        progress
     done
     return $result
 }
 
 wait_for_wrapper() {
+    TIME_START=$(date +%s)
+
     # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
     if ([ "${QUIET}" -eq 1 ]); then
         eval $TIMEOUT_CMD $TIMEOUT_FLAG $TIMEOUT $0 --quiet --child --status=$STATUS --timeout=$TIMEOUT $CMD &
@@ -84,6 +96,20 @@ wait_for_wrapper() {
     fi
     PID=$!
     trap "kill -INT -$PID" INT
+    
+    while [ $(($(date +%s)-TIME_START)) -lt "${TIMEOUT}" ]; do
+
+        eval $CMD >/dev/null 2>&1
+        result=$?
+        
+        if ([ "${result}" -eq "${STATUS}" ]); then
+            break
+        fi
+
+        sleep $INTERVAL
+        
+        progress
+    done
     wait $PID
     RESULT=$?
     return $RESULT
@@ -100,13 +126,6 @@ do
         -H | --help)
         usage 0
         ;;
-        -Q | --quiet)
-        QUIET=1
-        shift 1
-        ;;
-        -V | --version)
-        version
-        ;;
         -I)
         INTERVAL="$2"
         if [ -z "${INTERVAL}" ]; then break; fi
@@ -116,13 +135,21 @@ do
         INTERVAL="${1#*=}"
         shift 1
         ;;
+        -P | --progress)
+        PROGRESS=1
+        shift 1
+        ;;
+        -Q | --quiet)
+        QUIET=1
+        shift 1
+        ;;
         -S)
         STATUS="$2"
         if [ -z "${STATUS}" ]; then break; fi
         shift 2
         ;;
         --status=*)
-        TIMEOUT="${1#*=}"
+        STATUS="${1#*=}"
         shift 1
         ;;
         -T)
@@ -133,6 +160,9 @@ do
         --timeout=*)
         TIMEOUT="${1#*=}"
         shift 1
+        ;;
+        -V | --version)
+        version
         ;;
         -*)
         echoto 2 "Unknown argument: $1"
@@ -151,13 +181,14 @@ if [ -z "${CMD}" ]; then
 fi
 
 if [ -z "${CMD}" ]; then
-    echoto 2 "Error: you need to provide a COMMAND to test as the last argument or via standard input."
+    echoto 2 "Error: you need to provide a COMMAND to test as the last argument or via standard input.\n"
     usage 1
 fi
 
 CHILD=${CHILD:-0}
-QUIET=${QUIET:-0}
 INTERVAL=${INTERVAL:-1}
+PROGRESS=${PROGRESS:-0}
+QUIET=${QUIET:-0}
 STATUS=${STATUS:-0}
 TIMEOUT=${TIMEOUT:-1}
 
@@ -177,7 +208,7 @@ if [ "${TIMEOUT_TEST_STATUS}" -eq 127 ]; then
     TIMEOUT_TEST_STATUS="$?"
     
     if [ "${TIMEOUT_TEST_STATUS}" -eq 127 ]; then
-        echoto 2 "timeout|gtimeout is required by the script, but not found!"
+        echoto 2 "timeout|gtimeout is required by the script, but not found!\n"
         exit 1
     fi
 
@@ -203,10 +234,15 @@ else
 fi
 
 if [ "${RESULT}" -ne "${STATUS}" ]; then
-    echoto 2 "$cmdname: timeout occurred after waiting $TIMEOUT seconds for $CMD to return status: $STATUS (was status: $RESULT)"
-    exit $RESULT
+    echoto 2 "$cmdname: timeout occurred after waiting $TIMEOUT seconds for $CMD to return status: $STATUS (was status: $RESULT)\n"
+    if [ "${RESULT}" -eq 0 ]; then
+        # exit with 1, inspite the fact original ended with 0 (as we expected non-0)
+        exit 1
+    else 
+        exit $RESULT
+    fi
 else
     end_ts=$(date +%s)
-    echoto 1 "$cmdname: $CMD finished with expected status $RESULT after $((end_ts - start_ts)) seconds"
+    echoto 1 "$cmdname: $CMD finished with expected status $RESULT after $((end_ts - start_ts)) seconds\n"
     exit 0
 fi

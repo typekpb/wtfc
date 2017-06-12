@@ -8,6 +8,18 @@ timeout_err_status() {
 
 }
 
+describe "-P, --progress argument"
+    it "-P argument prints '.' on each interval expiry"
+        message="$($SHPEC_ROOT/../wtfc.sh -P -T 2 -S 2 ls 2>&1)"
+        assert grep "$message" ".."
+    end
+
+    it "--progress argument prints '.' on each interval expiry"
+        message="$($SHPEC_ROOT/../wtfc.sh --progress -T 2 -S 2 ls 2>&1)"
+        assert grep "$message" ".."
+    end
+end
+
 describe "-Q, --quiet argument"
     it "-Q argument prevents printing to stdout"
         message="$($SHPEC_ROOT/../wtfc.sh -Q ls)"
@@ -41,14 +53,14 @@ describe "-V, --version argument"
         assert equal "$?" "0"
     end
 
-    it "-V prints 'wtfc (WaiT For the Command) version: 0.0.1'"
+    it "-V prints 'wtfc (WaiT For the Command) version: 0.0.2'"
         message="$($SHPEC_ROOT/../wtfc.sh -V 2>&1)"
-        assert grep "${message}" "wtfc (WaiT For the Command) version: 0.0.1"
+        assert grep "${message}" "wtfc (WaiT For the Command) version: 0.0.2"
     end
 
-    it "--version prints 'wtfc (WaiT For the Command) version: 0.0.1'"
+    it "--version prints 'wtfc (WaiT For the Command) version: 0.0.2'"
         message="$($SHPEC_ROOT/../wtfc.sh --version 2>&1)"
-        assert grep "${message}" "wtfc (WaiT For the Command) version: 0.0.1"
+        assert grep "${message}" "wtfc (WaiT For the Command) version: 0.0.2"
     end
 end
 
@@ -127,13 +139,17 @@ describe "COMMAND exit status"
         assert equal "$?" "${timeout_status}"
     end
 
+    it "returns 123/143 if expected is not 0, but actual was 0"
+        $SHPEC_ROOT/../wtfc.sh -S 2 ls >/dev/null 2>&1 
+        assert equal "$?" "${timeout_status}"
+    end
+    
     it "returns 0 if expected as well as actual were non-zero but equal"
         timeout_err_status
         timeout_status="$?"
         $SHPEC_ROOT/../wtfc.sh -S ${timeout_status} ls /nonexistant/dir >/dev/null 2>&1 
         assert equal "$?" "0"
     end
-
 end
 
 describe "Unknown argument"
