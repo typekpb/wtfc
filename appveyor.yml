@@ -2,10 +2,11 @@
 # But it's old and misses some stuff anyway
 shallow_clone: true
 cache:
-    - c:\cygwin-setup-cache
+    - C:\cygwin\var\cache\setup
 environment:
-    CYGWIN_NOWINPATH: yes
-    cygwin_url: https://cygwin.com/setup-x86.exe
+    CYG_ROOT: C:/cygwin
+    CYG_MIRROR: https://cygwin.com/setup-x86.exe
+    CYG_CACHE: C:/cygwin/var/cache/setup
     matrix:
       - SH: bash
         EXEC: bash
@@ -16,8 +17,9 @@ environment:
       - SH: zsh
         EXEC: zsh
 install:
-    - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
-    - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages curl,make,$env:SH
+    - %CYG_ROOT%\setup-x86.exe -qnNdO -R "%CYG_ROOT%" -s "%CYG_MIRROR%" -l "%CYG_CACHE%" -P make,curl,%SH% > NUL'
+    # - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
+    # - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages curl,make,$env:SH
     # - c:\cygwin-root\bin\sh -O "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
     - ps: Invoke-WebRequest https://raw.github.com/rylnd/shpec/master/install.sh -OutFile install.sh
     - c:\cygwin-root\bin\sh install.sh
