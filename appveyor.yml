@@ -17,11 +17,11 @@ environment:
       - SH: zsh
         EXEC: zsh
 install:
-    - %CYG_ROOT%\setup-x86.exe -qnNdO -R "%CYG_ROOT%" -s "%CYG_MIRROR%" -l "%CYG_CACHE%" -P make,curl,%SH% > NUL'
+    - cmd: %CYG_ROOT%\setup-x86.exe -qnNdO -R "%CYG_ROOT%" -s "%CYG_MIRROR%" -l "%CYG_CACHE%" -P make,curl,%SH% > NUL'
     # - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
     # - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages curl,make,$env:SH
     # - c:\cygwin-root\bin\sh -O "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
     - ps: Invoke-WebRequest https://raw.github.com/rylnd/shpec/master/install.sh -OutFile install.sh
-    - c:\cygwin-root\bin\sh install.sh
+    - ps: c:\cygwin-root\bin\sh install.sh
 build_script:
-    - c:\cygwin-root\bin\$env:EXEC shpec
+    - ps: c:\cygwin-root\bin\$env:EXEC shpec
