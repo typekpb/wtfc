@@ -4,9 +4,6 @@ shallow_clone: true
 cache:
     - C:\cygwin\var\cache\setup
 environment:
-    CYG_ROOT: C:/cygwin
-    CYG_MIRROR: https://cygwin.com/setup-x86.exe
-    CYG_CACHE: C:/cygwin/var/cache/setup
     matrix:
       - SH: bash
         EXEC: bash
@@ -17,7 +14,7 @@ environment:
       - SH: zsh
         EXEC: zsh
 install:
-    - cmd: C:/cygwin/setup-x86.exe -qnNdO -R C:/cygwin -s https://cygwin.com/setup-x86.exe -l C:/cygwin/var/cache/setup -P make,curl,%SH%
+    - cmd: C:/cygwin/setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/cygwin/var/cache/setup -P make,curl,%SH%
     # - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
     # - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages curl,make,$env:SH
     # - c:\cygwin-root\bin\sh -O "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
