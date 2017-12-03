@@ -17,7 +17,7 @@ environment:
         EXEC: zsh
 install:
     - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
-    - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages $env:SH curl
+    - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages $env:SH curl make
     - c:\cygwin-root\bin\sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
 build_script:
     - c:\cygwin-root\bin\$env:EXEC shpec
