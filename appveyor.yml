@@ -5,7 +5,7 @@ cache:
     - c:\cygwin-setup-cache
 environment:
     CYGWIN_NOWINPATH: yes
-    cygwin_url: https://cygwin.com/setup-x86_64.exe
+    cygwin_url: https://cygwin.com/setup-x86.exe
     matrix:
       - SH: bash
         EXEC: bash
