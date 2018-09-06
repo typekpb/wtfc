@@ -23,3 +23,4 @@ install:
     - c:\cygwin\bin\sh install.sh
 build_script:
     - ps: c:\cygwin\bin\$env:EXEC shpec
+
