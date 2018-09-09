@@ -14,14 +14,20 @@ environment:
       - SH: zsh
         EXEC: zsh
 install:
+    - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
+      # libcrypt-devel is needed only on x86_64 and only for modperl... probably some dependency problem.
+    - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages automake,gcc-g++,make,pkg-config,openssl-devel,libicu-devel,zlib-devel,libcrypt-devel,perl,python3-devel,libsasl2-devel,cygport,bash,zsh,mksh,dash
+#
+#
     #- cmd: C:/cygwin/setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/cygwin/var/cache/setup -P make,curl,%SH%
     # - cmd: C:/cygwin/setup-x86.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin -P make -P curl -P %SH%
     # - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
     # - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages curl,make,$env:SH
     # - c:\cygwin-root\bin\sh -O "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
+#
     - ps: Invoke-WebRequest https://raw.github.com/rylnd/shpec/master/install.sh -OutFile install.sh
     - c:\cygwin\bin\sh install.sh
 build_script:
-    - ps: c:\cygwin\bin\bash shpec
+    - ps: c:\cygwin\bin\EXEC% shpec
     #- ps: c:\cygwin\bin\%EXEC% shpec
 
