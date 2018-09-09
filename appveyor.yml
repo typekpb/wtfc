@@ -28,6 +28,6 @@ install:
     - ps: Invoke-WebRequest https://raw.github.com/rylnd/shpec/master/install.sh -OutFile install.sh
     - c:\cygwin\bin\sh install.sh
 build_script:
-    - ps: "c:\cygwin\bin\$env:EXEC" shpec
+    - ps: c:\cygwin\bin\bash shpec
     #- ps: c:\cygwin\bin\%EXEC% shpec
 
