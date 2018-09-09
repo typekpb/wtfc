@@ -14,7 +14,7 @@ environment:
       - SH: zsh
         EXEC: zsh
 install:
-    - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
+    - ps: Invoke-WebRequest https://cygwin.com/setup-x86_64.exe -OutFile c:\cygwin-setup.exe
       # libcrypt-devel is needed only on x86_64 and only for modperl... probably some dependency problem.
     - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages automake,gcc-g++,make,pkg-config,openssl-devel,libicu-devel,zlib-devel,libcrypt-devel,perl,python3-devel,libsasl2-devel,cygport,bash,zsh,mksh,dash
 #
