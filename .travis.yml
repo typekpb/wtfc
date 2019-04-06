@@ -36,6 +36,10 @@ matrix:
     - os: osx
       env: SH=ksh
     - os: linux
+      env: SH=xonsh DIST=debian
+    - os: osx
+      env: SH=xonsh
+    - os: linux
       env: SH=zsh DIST=alpine
     - os: linux
       env: SH=zsh DIST=debian
