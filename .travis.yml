@@ -1,8 +1,8 @@
 language: sh
 
 os:
-  - linux
-  - osx
+  # - linux
+  # - osx
   - windows
 
 dist: trusty
@@ -14,8 +14,8 @@ env:
 
 matrix:
   include:
-    - os: linux
-      env: DIST=busybox
+    # - os: linux
+    #   env: DIST=busybox
     # - os: linux
     #   env: SH=ash DIST=alpine
     # - os: linux
@@ -46,7 +46,7 @@ matrix:
       env: SH=bash
   exclude:
     # https://github.com/travis-ci/travis-ci/issues/4681
-    - os: linux
+    # - os: linux
     # - os: osx
     - os: windows
 
