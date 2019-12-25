@@ -57,8 +57,7 @@ before_install:
       brew install coreutils ${SH}
       sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
     elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
-      echo running on windows
-    #   chocolatey install
+      sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
     else
       # latest docker
       sudo apt-get update
