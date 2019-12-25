@@ -3,6 +3,7 @@ language: sh
 os:
   - linux
   - osx
+  - windows
 
 dist: trusty
 services: docker
@@ -15,36 +16,39 @@ matrix:
   include:
     - os: linux
       env: DIST=busybox
-    - os: linux
-      env: SH=ash DIST=alpine
-    - os: linux
-      env: SH=bash DIST=alpine
-    - os: linux
-      env: SH=bash DIST=debian
-    - os: osx
+    # - os: linux
+    #   env: SH=ash DIST=alpine
+    # - os: linux
+    #   env: SH=bash DIST=alpine
+    # - os: linux
+    #   env: SH=bash DIST=debian
+    # - os: osx
+    #   env: SH=bash
+    # - os: linux
+    #   env: SH=dash DIST=alpine
+    # - os: linux
+    #   env: SH=dash DIST=debian
+    # - os: osx
+    #   env: SH=dash
+    # - os: linux
+    #   env: SH=ksh DIST=alpine
+    # - os: linux
+    #   env: SH=ksh DIST=debian
+    # - os: osx
+    #   env: SH=ksh
+    # - os: linux
+    #   env: SH=zsh DIST=alpine
+    # - os: linux
+    #   env: SH=zsh DIST=debian
+    # - os: osx
+    #   env: SH=zsh
+    - os: windows
       env: SH=bash
-    - os: linux
-      env: SH=dash DIST=alpine
-    - os: linux
-      env: SH=dash DIST=debian
-    - os: osx
-      env: SH=dash
-    - os: linux
-      env: SH=ksh DIST=alpine
-    - os: linux
-      env: SH=ksh DIST=debian
-    - os: osx
-      env: SH=ksh
-    - os: linux
-      env: SH=zsh DIST=alpine
-    - os: linux
-      env: SH=zsh DIST=debian
-    - os: osx
-      env: SH=zsh
-  exclude: 
+  exclude:
     # https://github.com/travis-ci/travis-ci/issues/4681
     - os: linux
-    - os: osx
+    # - os: osx
+    - os: windows
 
 before_install:
   - |
@@ -52,8 +56,10 @@ before_install:
       brew update
       brew install coreutils ${SH}
       sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
+    # elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
+    #   chocolatey install
     else
-      # latest docker 
+      # latest docker
       sudo apt-get update
       sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
       docker --version
@@ -68,10 +74,12 @@ script:
   - |
     if [[ $TRAVIS_OS_NAME == "osx" ]]; then
       ${SH} -c shpec
+    elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
+      ${SH} -c shpec
     else
       if [ -z "${SH}" ]; then
-        docker-compose run "${DIST}"; 
-      else 
-        docker-compose run "${SH}_${DIST}"; 
+        docker-compose run "${DIST}";
+      else
+        docker-compose run "${SH}_${DIST}";
       fi
     fi
