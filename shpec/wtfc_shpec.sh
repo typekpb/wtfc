@@ -1,6 +1,6 @@
 # timeout error status differs based on distro (alpine=143, others=124)
 timeout_err_status() {
-    cat /etc/os-release | grep ID= | grep -q alpine
+    cat /etc/os-release | grep ID= | grep -q alpine 2>&1 > /dev/null
     ec=$?
     if [ $ec -eq 0 ] ; then
         return 143
