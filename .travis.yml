@@ -76,8 +76,10 @@ script:
     if [[ $TRAVIS_OS_NAME == "osx" ]]; then
       ${SH} -c shpec
     elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
+      # temporary workaround for:
+      echo ""  >> /usr/local/bin/shpec
+      echo shpec >> /usr/local/bin/shpec
       ${SH} -c /usr/local/bin/shpec
-      echo ZZZZZZZZ
     else
       if [ -z "${SH}" ]; then
         docker-compose run "${DIST}";
