@@ -44,6 +44,12 @@ matrix:
     #   env: SH=zsh
     - os: windows
       env: SH=bash
+    - os: windows
+      env: SH=dash
+    - os: windows
+      env: SH=ksh
+    - os: windows
+      env: SH=zsh
   exclude:
     # https://github.com/travis-ci/travis-ci/issues/4681
     # - os: linux
@@ -57,7 +63,7 @@ before_install:
       brew install coreutils ${SH}
       sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
     elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
-      choco install make
+      choco install make ${SH}
       sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
     else
       # latest docker
@@ -76,7 +82,7 @@ script:
     if [[ $TRAVIS_OS_NAME == "osx" ]]; then
       ${SH} -c shpec
     elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
-      # temporary workaround for:
+      # temporary workaround for: https://github.com/rylnd/shpec/pull/127
       echo ""  >> /usr/local/bin/shpec
       echo shpec >> /usr/local/bin/shpec
       ${SH} -c /usr/local/bin/shpec
