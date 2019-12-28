@@ -46,8 +46,8 @@ matrix:
       env: SH=bash
   exclude:
     # https://github.com/travis-ci/travis-ci/issues/4681
-    # - os: linux
-    # - os: osx
+    - os: linux
+    - os: osx
     - os: windows
 
 before_install:
