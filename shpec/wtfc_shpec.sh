@@ -54,14 +54,14 @@ describe "-V, --version argument"
         assert equal "$?" "0"
     end
 
-    it "-V prints 'wtfc (WaiT For the Command) version: 0.0.2'"
+    it "-V prints 'wtfc (WaiT For the Command) version: 0.0.3'"
         message="$($SHPEC_ROOT/../wtfc.sh -V 2>&1)"
-        assert grep "${message}" "wtfc (WaiT For the Command) version: 0.0.2"
+        assert grep "${message}" "wtfc (WaiT For the Command) version: 0.0.3"
     end
 
-    it "--version prints 'wtfc (WaiT For the Command) version: 0.0.2'"
+    it "--version prints 'wtfc (WaiT For the Command) version: 0.0.3'"
         message="$($SHPEC_ROOT/../wtfc.sh --version 2>&1)"
-        assert grep "${message}" "wtfc (WaiT For the Command) version: 0.0.2"
+        assert grep "${message}" "wtfc (WaiT For the Command) version: 0.0.3"
     end
 end
 
