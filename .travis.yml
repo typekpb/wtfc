@@ -3,6 +3,7 @@ language: sh
 os:
   - linux
   - osx
+  - windows
 
 dist: trusty
 services: docker
@@ -41,10 +42,13 @@ matrix:
       env: SH=zsh DIST=debian
     - os: osx
       env: SH=zsh
-  exclude: 
+    - os: windows
+      env: SH=bash
+  exclude:
     # https://github.com/travis-ci/travis-ci/issues/4681
     - os: linux
     - os: osx
+    - os: windows
 
 before_install:
   - |
@@ -52,8 +56,11 @@ before_install:
       brew update
       brew install coreutils ${SH}
       sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
+    elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
+      choco install make
+      sh -c "`curl -L https://raw.github.com/rylnd/shpec/master/install.sh`"
     else
-      # latest docker 
+      # latest docker
       sudo apt-get update
       sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
       docker --version
@@ -68,10 +75,15 @@ script:
   - |
     if [[ $TRAVIS_OS_NAME == "osx" ]]; then
       ${SH} -c shpec
+    elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
+      # temporary workaround for: https://github.com/rylnd/shpec/pull/127
+      echo ""  >> /usr/local/bin/shpec
+      echo shpec >> /usr/local/bin/shpec
+      ${SH} -c /usr/local/bin/shpec
     else
       if [ -z "${SH}" ]; then
-        docker-compose run "${DIST}"; 
-      else 
-        docker-compose run "${SH}_${DIST}"; 
+        docker-compose run "${DIST}";
+      else
+        docker-compose run "${SH}_${DIST}";
       fi
     fi
